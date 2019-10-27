@@ -150,7 +150,7 @@ public class Arguments {
     private static int toInt(String value, String type) {
         try {
             int integer = Integer.parseInt(value);
-            if (integer <= 0) {
+            if (integer < 0) {
                 throw new IllegalArgumentException(type + " must be a positive integer instead of " + value);
             }
             return integer;

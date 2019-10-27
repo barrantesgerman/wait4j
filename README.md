@@ -4,19 +4,19 @@
 
 It is useful to synchronize the start of an application that requires other services to be available, such as docker containers.
 
-It was inspired by [vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it) and [eficode/wait-for](https://github.com/eficode/wait-for). But it differs from them in three aspects:
+It was inspired by [vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it) and [eficode/wait-for](https://github.com/eficode/wait-for). But it differs from them in two aspects:
 
  - It is written in Java, so it requires JRE 8
  - It can verify multiple hosts simultaneously
- - The minimum timeout is 1 second
 
 ## Usage
 
 ```
-java -jar waitj4.jar host:port [host:port] [-t timeout] [-q] -- command args
-  -q | --quiet                      Do not output any status messages
-  -t TIMEOUT | --timeout=TIMEOUT    Timeout in seconds, minimum 1 second, default 30 seconds
--- COMMAND ARGS                     Execute command with args after the test finishes  
+Usage: java -jar waitj4.jar host:port [host:port] [-t timeout] [-q] -- command args
+Options:
+ -q, --quiet              Do not output any status messages
+ -t, --timeout=TIMEOUT    Timeout in seconds, zero for no timeout, default 30 seconds
+-- COMMAND ARGS           Execute command with args after the test finishes  
 ```
 
 ## Examples

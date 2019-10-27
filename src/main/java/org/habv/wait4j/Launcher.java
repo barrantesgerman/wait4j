@@ -44,7 +44,13 @@ public class Launcher {
                     .forEach(service::submit);
 
             start.countDown();
-            boolean allDone = done.await(arguments.getTimeout(), TimeUnit.SECONDS);
+            int timeout = arguments.getTimeout();
+            boolean allDone = true;
+            if(timeout == 0) {
+                done.await();
+            } else {
+                allDone = done.await(timeout, TimeUnit.SECONDS);
+            }
             service.shutdown();
 
             if (allDone) {
