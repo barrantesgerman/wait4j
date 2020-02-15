@@ -32,10 +32,10 @@ public class Arguments {
      * Create an instance that represents the command line arguments.
      *
      * @param hostPorts list of host and port to be checked
-     * @param timeout maximum time to wait for host and port availability in
-     * seconds
-     * @param verbose how the output should be, if it is true it will be
-     * verbose, if it is false it will be quiet
+     * @param timeout   maximum time to wait for host and port availability in
+     *                  seconds
+     * @param verbose   how the output should be, if it is true it will be
+     *                  verbose, if it is false it will be quiet
      */
     private Arguments(Set<HostPort> hostPorts, int timeout, boolean verbose, List<String> command) {
         this.hostPorts = hostPorts;
@@ -97,12 +97,12 @@ public class Arguments {
         List<String> command = new ArrayList<>();
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            if(isCommand) {
+            if (isCommand) {
                 command.add(arg);
             } else if (arg.equals("--")) {
                 isCommand = true;
             } else if (arg.equals("-t")) {
-                if(i == args.length - 1) {
+                if (i == args.length - 1) {
                     throw new IllegalArgumentException("You must provide a timeout value");
                 }
                 timeout = toInt(args[++i], "Timeout");
@@ -144,7 +144,7 @@ public class Arguments {
      * Convert a string to int.
      *
      * @param value string to be converted
-     * @param type type for the error message
+     * @param type  type for the error message
      * @return string converted to int
      */
     private static int toInt(String value, String type) {

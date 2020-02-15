@@ -46,7 +46,7 @@ public class Launcher {
             start.countDown();
             int timeout = arguments.getTimeout();
             boolean allDone = true;
-            if(timeout == 0) {
+            if (timeout == 0) {
                 done.await();
             } else {
                 allDone = done.await(timeout, TimeUnit.SECONDS);

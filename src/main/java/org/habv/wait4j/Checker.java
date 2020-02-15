@@ -36,11 +36,11 @@ public class Checker implements Runnable {
     /**
      * Create a new thread to verify the availability of a host:port.
      *
-     * @param host host name
-     * @param port port number
+     * @param host    host name
+     * @param port    port number
      * @param verbose verbose indicator
-     * @param start start countdown
-     * @param done done countdown
+     * @param start   start countdown
+     * @param done    done countdown
      */
     public Checker(String host, int port, boolean verbose, CountDownLatch start, CountDownLatch done) {
         this.host = host;
