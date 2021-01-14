@@ -1,6 +1,11 @@
 package org.habv.wait4j;
 
-import java.util.*;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Parse the command line arguments and store them.
@@ -12,7 +17,7 @@ public class Arguments {
     /**
      * List of host and port to be checked.
      */
-    private final Set<HostPort> hostPorts;
+    private final Set<InetSocketAddress> addresses;
     /**
      * Maximum time to wait for host and port availability in seconds.
      */
@@ -31,14 +36,14 @@ public class Arguments {
     /**
      * Create an instance that represents the command line arguments.
      *
-     * @param hostPorts list of host and port to be checked
-     * @param timeout   maximum time to wait for host and port availability in
-     *                  seconds
-     * @param verbose   how the output should be, if it is true it will be
-     *                  verbose, if it is false it will be quiet
+     * @param addresses list of host and port to be checked
+     * @param timeout maximum time to wait for host and port availability in
+     * seconds
+     * @param verbose how the output should be, if it is true it will be
+     * verbose, if it is false it will be quiet
      */
-    private Arguments(Set<HostPort> hostPorts, int timeout, boolean verbose, List<String> command) {
-        this.hostPorts = hostPorts;
+    private Arguments(Set<InetSocketAddress> addresses, int timeout, boolean verbose, List<String> command) {
+        this.addresses = addresses;
         this.timeout = timeout;
         this.verbose = verbose;
         this.command = command;
@@ -50,8 +55,8 @@ public class Arguments {
      *
      * @return list of host and port to be checked
      */
-    public Set<HostPort> getHostPorts() {
-        return hostPorts;
+    public Set<InetSocketAddress> getAddresses() {
+        return addresses;
     }
 
     /**
@@ -90,7 +95,7 @@ public class Arguments {
      * @return instance that represents the command line arguments
      */
     public static Arguments parse(String[] args) {
-        Set<HostPort> hostPorts = new HashSet<>();
+        Set<InetSocketAddress> addresses = new HashSet<>();
         int timeout = 30;
         boolean verbose = true;
         boolean isCommand = false;
@@ -111,30 +116,30 @@ public class Arguments {
             } else if (arg.equals("-q") || arg.equals("--quiet")) {
                 verbose = false;
             } else {
-                hostPorts.add(toHostPort(arg));
+                addresses.add(toAddress(arg));
             }
         }
-        if (hostPorts.isEmpty()) {
+        if (addresses.isEmpty()) {
             throw new IllegalArgumentException("You must provide at least one host:port");
         }
         if (command.isEmpty()) {
             throw new IllegalArgumentException("You must provide at least one command parameter");
         }
-        return new Arguments(Collections.unmodifiableSet(hostPorts), timeout, verbose, Collections.unmodifiableList(command));
+        return new Arguments(Collections.unmodifiableSet(addresses), timeout, verbose, Collections.unmodifiableList(command));
     }
 
     /**
-     * Convert a string to a host and port.
+     * Convert a string to a address.
      *
      * @param value string to be converted
-     * @return representation as host and port
+     * @return representation as address
      */
-    private static HostPort toHostPort(String value) {
+    private static InetSocketAddress toAddress(String value) {
         if (value.contains(":")) {
             String[] parts = value.split(":", 2);
             String host = parts[0];
             int port = toInt(parts[1], "Port");
-            return new HostPort(host, port);
+            return new InetSocketAddress(host, port);
         } else {
             throw new IllegalArgumentException("You must provide a host name in the format host:port instead of " + value);
         }
@@ -144,7 +149,7 @@ public class Arguments {
      * Convert a string to int.
      *
      * @param value string to be converted
-     * @param type  type for the error message
+     * @param type type for the error message
      * @return string converted to int
      */
     private static int toInt(String value, String type) {

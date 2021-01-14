@@ -12,13 +12,9 @@ import java.util.concurrent.CountDownLatch;
 public class Checker implements Runnable {
 
     /**
-     * Host name to check.
+     * Address to check.
      */
-    private final String host;
-    /**
-     * Port number to check.
-     */
-    private final int port;
+    private final InetSocketAddress address;
     /**
      * Indicates whether status messages should be printed.
      */
@@ -36,15 +32,13 @@ public class Checker implements Runnable {
     /**
      * Create a new thread to verify the availability of a host:port.
      *
-     * @param host    host name
-     * @param port    port number
+     * @param address address to check
      * @param verbose verbose indicator
      * @param start   start countdown
      * @param done    done countdown
      */
-    public Checker(String host, int port, boolean verbose, CountDownLatch start, CountDownLatch done) {
-        this.host = host;
-        this.port = port;
+    public Checker(InetSocketAddress address, boolean verbose, CountDownLatch start, CountDownLatch done) {
+        this.address = address;
         this.verbose = verbose;
         this.start = start;
         this.done = done;
@@ -59,14 +53,14 @@ public class Checker implements Runnable {
         try {
             start.await();
             if (verbose) {
-                System.out.printf("Connecting with %s:%d%n", host, port);
+                System.out.printf("Connecting with %s:%d%n", address.getHostName(), address.getPort());
             }
             boolean retry = !isAvailable();
             while (retry) {
                 retry = !isAvailable();
             }
             if (verbose) {
-                System.out.printf("Connection to %s:%d succeeded!%n", host, port);
+                System.out.printf("Connection to %s:%d succeeded!%n", address.getHostName(), address.getPort());
             }
             done.countDown();
         } catch (InterruptedException ex) {
@@ -84,7 +78,7 @@ public class Checker implements Runnable {
      */
     private boolean isAvailable() {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), 1000);
+            socket.connect(address, 1000);
         } catch (Exception ex) {
             return false;
         }

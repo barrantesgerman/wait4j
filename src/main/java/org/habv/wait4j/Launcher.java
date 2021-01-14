@@ -30,7 +30,7 @@ public class Launcher {
     public void start(String[] args) {
         try {
             Arguments arguments = Arguments.parse(args);
-            int threads = arguments.getHostPorts().size();
+            int threads = arguments.getAddresses().size();
             boolean verbose = arguments.isVerbose();
 
             ExecutorService service = Executors.newFixedThreadPool(threads);
@@ -38,9 +38,9 @@ public class Launcher {
             CountDownLatch start = new CountDownLatch(1);
             CountDownLatch done = new CountDownLatch(threads);
 
-            arguments.getHostPorts()
+            arguments.getAddresses()
                     .stream()
-                    .map((host) -> new Checker(host.getHost(), host.getPort(), verbose, start, done))
+                    .map((address) -> new Checker(address, verbose, start, done))
                     .forEach(service::submit);
 
             start.countDown();
