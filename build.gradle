@@ -1,34 +1,32 @@
 plugins {
     id 'java'
-    id 'maven-publish'
+    id 'application'
+    id 'org.graalvm.buildtools.native' version '0.9.3'
 }
 
 repositories {
     mavenLocal()
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
+    mavenCentral()
+    gradlePluginPortal()
 }
 
 group = 'org.habv'
 version = '1.0.0'
 description = 'wait4j'
-java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
+application {
+    mainClass = 'org.habv.wait4j.Launcher'
 }
 
 jar {
     manifest {
         attributes 'Main-Class': 'org.habv.wait4j.Launcher'
     }
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+nativeBuild {
+    imageName = 'wait4j'
+    mainClass = 'org.habv.wait4j.Launcher'
 }
