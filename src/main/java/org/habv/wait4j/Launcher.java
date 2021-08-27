@@ -28,14 +28,23 @@ import static picocli.CommandLine.ExitCode.SOFTWARE;
         mixinStandardHelpOptions = true)
 public class Launcher implements Callable<Integer> {
 
+    /**
+     * Print more details (default: false).
+     */
     @Option(names = {"-v", "--verbose"},
             description = "Print more details (default: ${DEFAULT-VALUE}).")
     private boolean verbose;
 
+    /**
+     * Timeout in seconds, zero for no timeout (default 30 seconds).
+     */
     @Option(names = {"-t", "--timeout"},
-            description = "Set the timeout (default: ${DEFAULT-VALUE}).")
+            description = "Timeout in seconds, zero for no timeout%n(default ${DEFAULT-VALUE} seconds).")
     private int timeout = 30;
 
+    /**
+     * One or more addresses to check, in format: 'host:port'.
+     */
     @Option(names = {"-a", "--address"},
             description = "One or more addresses to check, in%nformat: 'host:port'.",
             paramLabel = "address",
@@ -44,8 +53,11 @@ public class Launcher implements Callable<Integer> {
             converter = InetSocketAddressConverter.class)
     private Set<InetSocketAddress> addresses;
 
+    /**
+     * Execute command with args after the test finishes.
+     */
     @Parameters(paramLabel = "COMMAND",
-            description = "Command to execute.",
+            description = "Execute command with args after the test finishes.",
             arity = "1..*")
     private List<String> command;
 
@@ -60,7 +72,7 @@ public class Launcher implements Callable<Integer> {
     }
 
     /**
-     * Start the program.
+     * A thread pool is created to check each address.
      */
     @Override
     public Integer call() throws Exception {

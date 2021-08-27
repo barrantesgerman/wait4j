@@ -15,14 +15,17 @@ public class Checker implements Runnable {
      * Address to check.
      */
     private final InetSocketAddress address;
+
     /**
      * Indicates whether status messages should be printed.
      */
     private final boolean verbose;
+
     /**
      * To synchronize the start of the threads.
      */
     private final CountDownLatch start;
+
     /**
      * To notify the main thread when the verification is successfully
      * completed.

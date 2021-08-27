@@ -5,8 +5,20 @@ import picocli.CommandLine.TypeConversionException;
 
 import java.net.InetSocketAddress;
 
+/**
+ * Convert the String argument to InetSocketAddress.
+ *
+ * @author Herman Barrantes
+ */
 public class InetSocketAddressConverter implements ITypeConverter<InetSocketAddress> {
 
+    /**
+     * Convert the String argument to InetSocketAddress.
+     *
+     * @param value String argument
+     * @return InetSocketAddress
+     * @throws Exception in case the format is not 'host:port'
+     */
     @Override
     public InetSocketAddress convert(String value) throws Exception {
         int pos = value.lastIndexOf(':');

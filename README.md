@@ -1,53 +1,59 @@
 ## wait4j
 
-`wait4j` is a Java utility designed to wait for the availability of various services through its host and port.
+`wait4j` is a utility designed to wait for the availability of various services through its host and port.
 
 It is useful to synchronize the start of an application that requires other services to be available, such as docker containers.
 
-It was inspired by [vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it) and [eficode/wait-for](https://github.com/eficode/wait-for). But it differs from them in two aspects:
-
- - It is written in Java, so it requires JRE 8
- - It can verify multiple hosts simultaneously
+It was inspired by [vishnubob/wait-for-it](https://github.com/vishnubob/wait-for-it) and [eficode/wait-for](https://github.com/eficode/wait-for). But it can verify multiple hosts simultaneously.
 
 ## Usage
 
 ```
-Usage: java -jar waitj4.jar host:port [host:port] [-t timeout] [-q] -- command args
-Options:
- -q, --quiet              Do not output any status messages
- -t, --timeout=TIMEOUT    Timeout in seconds, zero for no timeout, default 30 seconds
--- COMMAND ARGS           Execute command with args after the test finishes  
+Usage: wait4j [-hvV] [-t=<timeout>] -a=address[,address...] [-a=address[,
+              address...]]... [--] COMMAND...
+Wait for availability of multiple services.
+      COMMAND...            Execute command with args after the test finishes.
+  -a, --address=address[,address...]
+                            One or more addresses to check, in
+                            format: 'host:port'.
+  -h, --help                Show this help message and exit.
+  -t, --timeout=<timeout>   Timeout in seconds, zero for no timeout
+                            (default 30 seconds).
+  -v, --verbose             Print more details (default: false).
+  -V, --version             Print version information and exit.
+  --                        This option can be used to separate command-line
+                              options from the list of positional parameters.  
 ```
 
 ## Examples
 
-To check if [HABV](https://www.habv.org/) is available:
+To check if [Github](https://github.com/) is available:
 
 ```
-$ java -jar wait4j.jar www.habv.org:80 -- echo 'HABV is up'
+$ wait4j -v -a github.com:443 -- echo 'Github is up'
 
-Connecting with www.habv.org:80
-Connection to www.habv.org:80 succeeded!
-HABV is up
+Connecting with github.com:443
+Connection to github.com:443 succeeded!
+Github is up
 ```
 
 To check if [Google](https://www.google.com/) and [Facebook](https://www.facebook.com/) and [Twitter](https://twitter.com/) are available and show a Hello World notification:
 
 ```
-$ java -jar wait4j.jar www.google.com:80 www.facebook.com:80 twitter.com:80 -- notify-send 'Hello World!' 'This is a custom notification!'
+$ wait4j -v -a www.google.com:443,www.facebook.com:443 -a twitter.com:443 -- notify-send 'Hello World!' 'This is a custom notification!'
 
-Connecting with twitter.com:80
-Connecting with www.google.com:80
-Connecting with www.facebook.com:80
-Connection to www.google.com:80 succeeded!
-Connection to twitter.com:80 succeeded!
-Connection to www.facebook.com:80 succeeded!
+Connecting with twitter.com:443
+Connecting with www.facebook.com:443
+Connecting with www.google.com:443
+Connection to twitter.com:443 succeeded!
+Connection to www.google.com:443 succeeded!
+Connection to www.facebook.com:443 succeeded!
 ```
 
 Set timeout to 10 seconds and try a service not available, the exit code will be 1
 
 ```
-$ java -jar wait4j.jar mysql:3306 -t 10 -- echo 'MySQL is down'
+$ wait4j -v -a mysql:3306 -t 10 -- echo 'MySQL is up'
 
 Connecting with mysql:3306
 Timeout occurred after waiting 10 seconds
@@ -83,8 +89,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: example
     networks:
       - backend
-    command: ["java", "-jar", "/wait4j.jar", "db:3306", "--", "java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/SpringBoot.jar"]
+    command: ["wait4j", "-a", "db:3306", "--", "java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/SpringBoot.jar"]
 networks:
   backend:
 ```
-
