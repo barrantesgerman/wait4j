@@ -1,9 +1,9 @@
 package org.habv.wait4j;
 
 import picocli.CommandLine;
-import picocli.CommandLine.Command;
-import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
+import picocli.CommandLine.*;
+import picocli.CommandLine.Help.Ansi;
+import picocli.CommandLine.Model.CommandSpec;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -27,6 +27,12 @@ import static picocli.CommandLine.ExitCode.SOFTWARE;
         showEndOfOptionsDelimiterInUsageHelp = true,
         mixinStandardHelpOptions = true)
 public class Launcher implements Callable<Integer> {
+
+    /**
+     * Inject top-level command.
+     */
+    @Spec
+    private CommandSpec spec;
 
     /**
      * Print more details (default: false).
@@ -77,6 +83,11 @@ public class Launcher implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
 
+        if(timeout < 0) {
+            throw new ParameterException(
+                    spec.commandLine(),
+                    String.format("Invalid value '%d' for option '--timeout': value must be a positive number.", timeout));
+        }
         int threads = addresses.size();
 
         ExecutorService service = Executors.newFixedThreadPool(threads);
@@ -102,7 +113,9 @@ public class Launcher implements Callable<Integer> {
             return new ProcessRunner().run(command);
         } else {
             if (verbose) {
-                System.err.printf("Timeout occurred after waiting %d seconds%n", timeout);
+                System.err.printf(
+                        Ansi.AUTO.string("@|red [✖]|@ Timeout occurred after waiting %d seconds%n"),
+                        timeout);
             }
             return SOFTWARE;
         }

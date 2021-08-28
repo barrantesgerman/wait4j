@@ -22,7 +22,7 @@ Wait for availability of multiple services.
   -v, --verbose             Print more details (default: false).
   -V, --version             Print version information and exit.
   --                        This option can be used to separate command-line
-                              options from the list of positional parameters.  
+                              options from the list of positional parameters.
 ```
 
 ## Examples
@@ -31,9 +31,8 @@ To check if [Github](https://github.com/) is available:
 
 ```
 $ wait4j -v -a github.com:443 -- echo 'Github is up'
-
-Connecting with github.com:443
-Connection to github.com:443 succeeded!
+[➡] Connecting with github.com:443
+[✔] Connection to github.com:443 succeeded!
 Github is up
 ```
 
@@ -41,22 +40,20 @@ To check if [Google](https://www.google.com/) and [Facebook](https://www.faceboo
 
 ```
 $ wait4j -v -a www.google.com:443,www.facebook.com:443 -a twitter.com:443 -- notify-send 'Hello World!' 'This is a custom notification!'
-
-Connecting with twitter.com:443
-Connecting with www.facebook.com:443
-Connecting with www.google.com:443
-Connection to twitter.com:443 succeeded!
-Connection to www.google.com:443 succeeded!
-Connection to www.facebook.com:443 succeeded!
+[➡] Connecting with twitter.com:443
+[➡] Connecting with www.facebook.com:443
+[➡] Connecting with www.google.com:443
+[✔] Connection to twitter.com:443 succeeded!
+[✔] Connection to www.google.com:443 succeeded!
+[✔] Connection to www.facebook.com:443 succeeded!
 ```
 
 Set timeout to 10 seconds and try a service not available, the exit code will be 1
 
 ```
 $ wait4j -v -a mysql:3306 -t 10 -- echo 'MySQL is up'
-
-Connecting with mysql:3306
-Timeout occurred after waiting 10 seconds
+[➡] Connecting with mysql:3306
+[✖] Timeout occurred after waiting 10 seconds
 ```
 
 Docker example:
