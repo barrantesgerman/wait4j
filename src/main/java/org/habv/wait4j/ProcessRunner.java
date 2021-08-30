@@ -3,6 +3,8 @@ package org.habv.wait4j;
 import java.io.IOException;
 import java.util.List;
 
+import static picocli.CommandLine.ExitCode.SOFTWARE;
+
 /**
  * Run a background process, redirect the output and get the exit code.
  *
@@ -26,7 +28,7 @@ public class ProcessRunner {
             Process process = builder.start();
             return process.waitFor();
         } catch (IOException | InterruptedException ex) {
-            return 1;
+            return SOFTWARE;
         }
     }
 }

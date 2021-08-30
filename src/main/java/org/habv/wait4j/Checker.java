@@ -1,5 +1,7 @@
 package org.habv.wait4j;
 
+import picocli.CommandLine.Help.Ansi;
+
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
@@ -15,14 +17,17 @@ public class Checker implements Runnable {
      * Address to check.
      */
     private final InetSocketAddress address;
+
     /**
      * Indicates whether status messages should be printed.
      */
     private final boolean verbose;
+
     /**
      * To synchronize the start of the threads.
      */
     private final CountDownLatch start;
+
     /**
      * To notify the main thread when the verification is successfully
      * completed.
@@ -53,14 +58,20 @@ public class Checker implements Runnable {
         try {
             start.await();
             if (verbose) {
-                System.out.printf("Connecting with %s:%d%n", address.getHostName(), address.getPort());
+                System.out.printf(
+                        Ansi.AUTO.string("@|yellow [➡]️|@ Connecting with @|cyan,bold %s:%d|@%n"),
+                        address.getHostName(),
+                        address.getPort());
             }
             boolean retry = !isAvailable();
             while (retry) {
                 retry = !isAvailable();
             }
             if (verbose) {
-                System.out.printf("Connection to %s:%d succeeded!%n", address.getHostName(), address.getPort());
+                System.out.printf(
+                        Ansi.AUTO.string("@|green [✔]|@ Connection to @|cyan,bold %s:%d|@ succeeded!%n"),
+                        address.getHostName(),
+                        address.getPort());
             }
             done.countDown();
         } catch (InterruptedException ex) {

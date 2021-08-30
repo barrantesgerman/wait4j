@@ -1,8 +1,13 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'org.graalvm.buildtools.native' version '0.9.3'
 }
+
+group = 'org.habv'
+version = '1.0.0'
+description = 'wait4j'
 
 repositories {
     mavenLocal()
@@ -10,17 +15,24 @@ repositories {
     gradlePluginPortal()
 }
 
-group = 'org.habv'
-version = '1.0.0'
-description = 'wait4j'
+dependencies {
+    implementation 'info.picocli:picocli:4.6.1'
+    annotationProcessor 'info.picocli:picocli-codegen:4.6.1'
+}
+
+compileJava {
+    options.compilerArgs += ["-Aproject=${project.group}/${project.name}"]
+}
 
 application {
-    mainClass = 'org.habv.wait4j.Launcher'
+    mainClass.set('org.habv.wait4j.Launcher')
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'org.habv.wait4j.Launcher'
+        attributes(
+                'Main-Class': 'org.habv.wait4j.Launcher'
+        )
     }
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -29,4 +41,5 @@ jar {
 nativeBuild {
     imageName = 'wait4j'
     mainClass = 'org.habv.wait4j.Launcher'
+    buildArgs.add('--no-server')
 }
